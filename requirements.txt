@@ -1,0 +1,7 @@
+Django>=5.0
+openai
+python-dotenv
+whitenoise
+gunicorn
+requests
+psycopg2-binary

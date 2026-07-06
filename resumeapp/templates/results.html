@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results | IntelliHire Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+        :root {
+            --bg: #0d1117;
+            --sidebar-bg: #161b22;
+            --card-bg: #0d1117;
+            --border: #30363d;
+            --accent: #38bdf8;
+            --accent-purple: #a855f7;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #f85149;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--sidebar-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-container {
+            width: 95%;
+            max-width: 1300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .results-container {
+            width: 95%;
+            max-width: 1300px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding-bottom: 80px;
+        }
+
+        /* Top Meta Row - 5 Columns */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr 1.2fr 1fr;
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .metric-card label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+        }
+
+        .metric-card .val {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .metric-card .val i {
+            font-size: 1.2rem;
+            color: var(--accent);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .score-box {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score-header .pct {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 900;
+        }
+
+        .progress-rail {
+            height: 6px;
+            background: #30363d;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--accent-purple));
+        }
+
+        /* Main Analysis Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .grid-left,
+        .grid-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (max-width: 1000px) {
+
+            .analytics-grid,
+            .top-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .analysis-card {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .analysis-card h3 {
+            margin: 0 0 20px 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+        }
+
+        .analysis-card h3 i {
+            color: var(--accent);
+        }
+
+        /* Skill Section with Proficiency */
+        .skill-group {
+            margin-bottom: 25px;
+        }
+
+        .skill-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-group label {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag-complex {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 80px;
+        }
+
+        .skill-tag-complex .name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .skill-tag-complex .p-level {
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .p-advanced {
+            color: #3fb950;
+        }
+
+        .p-intermediate {
+            color: #d29922;
+        }
+
+        .p-beginner {
+            color: #8b949e;
+        }
+
+        /* Generic Skill Tag */
+        .skill-tag-simple {
+            background: #21262d;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            color: #c9d1d9;
+        }
+
+        /* Keyword Analysis */
+        .kw-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .kw-box {
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(13, 17, 23, 0.5);
+            border: 1px dashed var(--border);
+        }
+
+        .kw-box label {
+            display: block;
+            font-size: 0.6rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .kw-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .kw-item {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        /* Experience Analysis */
+        .exp-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .exp-item {
+            background: #21262d;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .exp-item span.l {
+            display: block;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .exp-item span.v {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Differentiators & Gaps */
+        .list-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #c9d1d9;
+        }
+
+        .list-row i {
+            margin-top: 3px;
+            font-size: 1rem;
+        }
+
+        .list-row.plus i {
+            color: #3fb950;
+        }
+
+        .list-row.minus i {
+            color: var(--danger);
+        }
+
+        /* Verdict Footer */
+        /* Portfolio & Credentials */
+        .portfolio-section {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .project-list,
+        .cert-list,
+        .achievement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 12px;
+            scrollbar-gutter: stable; /* Prevents layout shift */
+        }
+
+        /* Sleek Industrial Scrollbars */
+        .project-list::-webkit-scrollbar,
+        .cert-list::-webkit-scrollbar,
+        .achievement-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .project-list::-webkit-scrollbar-track,
+        .cert-list::-webkit-scrollbar-track,
+        .achievement-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .project-list::-webkit-scrollbar-thumb,
+        .cert-list::-webkit-scrollbar-thumb,
+        .achievement-list::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 10px;
+        }
+
+        .project-list::-webkit-scrollbar-thumb:hover,
+        .cert-list::-webkit-scrollbar-thumb:hover,
+        .achievement-list::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .project-dur {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        .rel-badge {
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .rel-high {
+            background: rgba(35, 134, 54, 0.2);
+            color: #3fb950;
+            border: 1px solid #238636;
+        }
+
+        .rel-medium {
+            background: rgba(210, 153, 34, 0.2);
+            color: #d29922;
+            border: 1px solid #9e7a27;
+        }
+
+        .rel-low {
+            background: rgba(139, 148, 158, 0.1);
+            color: #8b949e;
+            border: 1px solid rgba(139, 148, 158, 0.3);
+        }
+
+        .rel-no {
+            background: rgba(248, 81, 73, 0.05);
+            color: var(--danger);
+            border: 1px solid rgba(248, 81, 73, 0.2);
+            opacity: 0.8;
+        }
+
+        .cert-item {
+            display: flex;
+            align-items: center;
+            background-clip: padding-box;
+            -webkit-background-clip: padding-box;
+            box-sizing: border-box;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .cert-item i {
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .cert-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cert-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+
+        .cert-org {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+
+        .achievement-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .achievement-row:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-row i {
+            color: #f2e05d;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .achievement-text {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1000px) {
+            .portfolio-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+        }
+
+        .verdict-card {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .status-hire {
+            background: rgba(35, 134, 54, 0.2);
+            color: #3fb950;
+            border: 1px solid #3fb950;
+        }
+
+        .status-consider {
+            background: rgba(210, 153, 34, 0.2);
+            color: #d29922;
+            border: 1px solid #d29922;
+        }
+
+        .status-reject {
+            background: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+            border: 1px solid #f85149;
+        }
+
+        .domain-tag {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .reasoning-box {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #c9d1d9;
+        }
+
+        .reasoning-box strong {
+            color: #fff;
+        }
+
+        .watermark {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 4rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            letter-spacing: -3px;
+            user-select: none;
+        }
+
+        /* JD Missing Hint */
+        .jd-hint {
+            background: rgba(56, 189, 248, 0.03);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        .jd-hint:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.06);
+        }
+
+        .jd-hint i {
+            color: var(--accent);
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .jd-hint b {
+            color: #fff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+        }
+
+        .jd-hint span {
+            max-width: 300px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>IntelliHire Pro</h1>
+    </header>
+
+    <div class="nav-container">
+        <a href="/?clear=1" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Run New Analysis
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span
+                style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px; color: var(--accent); text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
+                Mode: {{ mode_label }}
+            </span>
+            <div
+                style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
+                Professional Hiring Intelligence Report
+            </div>
+        </div>
+    </div>
+
+    <div class="results-container">
+        <!-- Top Meta Row -->
+        <div class="top-row">
+            <div class="metric-card">
+                <label>Detected Role</label>
+                <div class="val" style="flex-wrap: wrap;">
+                    <i class="fa-solid fa-user-tag"></i>
+                    {% if not job_description %}
+                    <span style="font-size: 0.75rem; color: var(--text-dim);"><i class="fa-solid fa-lock"
+                            style="color: var(--accent); margin-right: 6px;"></i>Locked</span>
+                    <div
+                        style="font-size: 0.55rem; color: var(--text-dim); opacity: 0.6; width: 100%; margin-top: 5px;">
+                        (unlock paste a job description)</div>
+                    {% else %}
+                    {{ analysis.detected_role }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <label>Confidence Score</label>
+                <div class="score-box">
+                    <div class="score-header">
+                        {% if not job_description %}
+                        <span class="pct" style="color: var(--accent);"><i class="fa-solid fa-lock"></i></span>
+                        {% else %}
+                        <span class="pct">{{ analysis.confidence_score }}%</span>
+                        {% endif %}
+                    </div>
+                    {% if not job_description %}
+                    <div style="font-size: 0.55rem; color: var(--text-dim); opacity: 0.6; margin-top: 5px;">(unlock
+                        paste a job description)</div>
+                    {% else %}
+                    <div class="progress-rail">
+                        <div class="progress-fill" style="width: {{ analysis.confidence_score }}%"></div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <label>Experience Level</label>
+                <div class="val">
+                    <i class="fa-solid fa-stairs"></i>
+                    {{ analysis.experience_analysis.level }}
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <label>Relevance Match</label>
+                <div class="score-box">
+                    <div class="score-header">
+                        {% if not job_description %}
+                        <span class="pct" style="color: var(--accent);"><i class="fa-solid fa-lock"></i></span>
+                        {% else %}
+                        <span class="pct">{{ analysis.relevance_match }}%</span>
+                        {% endif %}
+                    </div>
+                    {% if not job_description %}
+                    <div style="font-size: 0.55rem; color: var(--text-dim); opacity: 0.6; margin-top: 5px;">(unlock
+                        paste a job description)</div>
+                    {% else %}
+                    <div class="progress-rail">
+                        <div class="progress-fill" style="width: {{ analysis.relevance_match }}%"></div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <label>Candidate Score</label>
+                <div class="score-box">
+                    <div class="score-header">
+                        <span class="pct">{{ analysis.candidate_score }}/100</span>
+                    </div>
+                    <div class="progress-rail">
+                        <div class="progress-fill"
+                            style="width: {{ analysis.candidate_score }}%; background: linear-gradient(to right, #3fb950, var(--accent));">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="analytics-grid">
+            <div class="grid-left">
+                <!-- Skill Ecosystem -->
+                <div class="analysis-card">
+                    <h3><i class="fa-solid fa-bolt-lightning"></i> Skill Ecosystem</h3>
+
+                    <div class="skill-group">
+                        <label>Technical Stacks</label>
+                        <div class="skill-tags">
+                            {% for s in analysis.skill_ecosystem.technical %}
+                            <div class="skill-tag-complex">
+                                <span class="name">{{ s.skill }}</span>
+                                <span class="p-level p-{{ s.proficiency|lower }}">{{ s.proficiency }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <label>Advanced Tools</label>
+                        <div class="skill-tags">
+                            {% for t in analysis.skill_ecosystem.tools %}
+                            <div class="skill-tag-complex">
+                                <span class="name">{{ t.skill }}</span>
+                                <span class="p-level p-{{ t.proficiency|lower }}">{{ t.proficiency }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <label>Soft Strengths</label>
+                        <div class="skill-tags">
+                            {% for s in analysis.skill_ecosystem.soft %}
+                            <div class="skill-tag-simple">{{ s }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Breakdown -->
+                <div class="analysis-card">
+                    <h3><i class="fa-solid fa-briefcase"></i> Experience Deep-Dive</h3>
+                    <div class="exp-details">
+                        <div class="exp-item">
+                            <span class="l">Total Career History</span>
+                            <span class="v">
+                                {% if analysis.experience_analysis.total_years == 0 %}
+                                Fresher
+                                {% else %}
+                                {{ analysis.experience_analysis.total_years }}Y
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="exp-item">
+                            <span class="l">Relevant Domain Exp</span>
+                            <span class="v">
+                                {% if analysis.experience_analysis.relevant_years == 0 %}
+                                New Entry
+                                {% else %}
+                                {{ analysis.experience_analysis.relevant_years }}Y
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-right">
+                <!-- Keyword Analysis -->
+                <div class="analysis-card">
+                    <h3><i class="fa-solid fa-magnifying-glass-chart"></i> Keyword Optimization</h3>
+                    <div class="kw-container">
+                        {% if not job_description %}
+                        <div class="jd-hint" style="grid-column: span 2; margin-top: 10px;">
+                            <i class="fa-solid fa-lock"></i>
+                            <b>Match Analysis Locked</b>
+                            <span>(for unlock paste a job description)</span>
+                        </div>
+                        {% else %}
+                        <div class="kw-box">
+                            <label>Matched Keywords</label>
+                            <div class="kw-list">
+                                {% for k in analysis.keyword_analysis.matched %}
+                                <div class="kw-item">{{ k }}</div>
+                                {% empty %}
+                                <div style="font-size: 0.7rem; color: var(--text-dim);">No direct keyword matches.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="kw-box">
+                            <label>Missing Criticals</label>
+                            <div class="kw-list">
+                                {% for k in analysis.keyword_analysis.missing %}
+                                <div class="kw-item" style="border-color: var(--danger); color: var(--danger);">{{ k }}
+                                </div>
+                                {% empty %}
+                                <div style="font-size: 0.7rem; color: var(--success);">Perfect keyword alignment!</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Differentiators & Gaps -->
+                <div class="analysis-card">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Strategic Evaluation</h3>
+                    <div style="margin-bottom: 25px;">
+                        <label
+                            style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Key
+                            Differentiators</label>
+                        {% for s in analysis.key_differentiators %}
+                        <div class="list-row plus">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>{{ s }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div style="margin-bottom: 25px;">
+                        <label
+                            style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Capability
+                            Gaps</label>
+                        {% for g in analysis.capability_gaps %}
+                        <div class="list-row minus">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>{{ g }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Suggestions for Improvement</label>
+                        {% for s in analysis.suggestions_for_improvement %}
+                        <div class="list-row" style="color: var(--accent);">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>{{ s }}</span>
+                        </div>
+                        {% empty %}
+                        <div style="font-size: 0.85rem; color: var(--text-dim); font-style: italic;">No suggestions available.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio & Credentials -->
+        <div class="analysis-card" style="margin-bottom: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0;"><i class="fa-solid fa-trophy"></i> Portfolio & Professional Credentials</h3>
+                {% if not job_description %}
+                    <style>@keyframes glow { 0%, 100% {opacity: 0.5;} 50% {opacity: 1;} }</style>
+                    <span style="font-size: 0.65rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; animation: glow 2s ease-in-out infinite;">
+                        <i class="fa-solid fa-lock" style="margin-right: 5px; font-size: 0.6rem;"></i> (for unlock the matching paste the job profile)
+                    </span>
+                {% endif %}
+            </div>
+            <div class="portfolio-section">
+                <!-- Projects -->
+                <div class="project-list">
+                    <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Key Projects & Timelines</label>
+                    {% for p in analysis.relevant_projects %}
+                    <div class="project-item">
+                        <div class="project-info">
+                            <span class="project-name">{{ p.name }}</span>
+                            <span class="project-dur">
+                                <i class="fa-regular fa-clock" style="margin-right: 5px;"></i>
+                                {% if p.duration and p.duration != "Not specified" and p.duration != "None" %}
+                                {{ p.duration }}
+                                {% else %}
+                                Timeline Not Present
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if not job_description %}
+                        <span class="rel-badge" style="background: rgba(56, 189, 248, 0.05); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-lock" style="font-size: 0.65rem;"></i>
+                        </span>
+                        {% else %}
+                        <span class="rel-badge rel-{{ p.relevance|lower }}">{{ p.relevance }} Match</span>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div style="font-size: 0.8rem; color: var(--text-dim); font-style: italic;">No specific project timeline data found.</div>
+                    {% endfor %}
+                </div>
+
+                <!-- Certifications -->
+                <div class="cert-list">
+                    <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Targeted Certifications</label>
+                    {% for c in analysis.relevant_certifications %}
+                    <div class="cert-item" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                            <i class="fa-solid fa-certificate" style="color: var(--accent);"></i>
+                            <div class="cert-details">
+                                <span class="cert-name" style="display: block; color: #fff; font-size: 0.85rem;">{{ c.name }}</span>
+                                <span class="cert-org" style="display: block; color: var(--text-dim); font-size: 0.7rem;">{{ c.issuing_org }}</span>
+                            </div>
+                        </div>
+                        {% if not job_description %}
+                        <span class="rel-badge" style="background: rgba(56, 189, 248, 0.05); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 8px; border-radius: 4px;">
+                            <i class="fa-solid fa-lock" style="font-size: 0.65rem;"></i>
+                        </span>
+                        {% else %}
+                        <span class="rel-badge rel-{{ c.relevance|lower }}">{{ c.relevance }}</span>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div style="font-size: 0.8rem; color: var(--text-dim); font-style: italic;">No certifications listed.</div>
+                    {% endfor %}
+                </div>
+
+                <!-- Achievements -->
+                <div class="achievement-list">
+                    <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Key Achievements</label>
+                    {% for a in analysis.achievements %}
+                    <div class="achievement-row" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                            <i class="fa-solid fa-award" style="color: #ffd700;"></i>
+                            <span class="achievement-text" style="font-size: 0.8rem; color: var(--text-main);">{{ a.text }}</span>
+                        </div>
+                        {% if not job_description %}
+                        <span class="rel-badge" style="background: rgba(56, 189, 248, 0.05); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 8px; border-radius: 4px;">
+                            <i class="fa-solid fa-lock" style="font-size: 0.65rem;"></i>
+                        </span>
+                        {% else %}
+                        <span class="rel-badge rel-{{ a.relevance|lower }}">{{ a.relevance }}</span>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div style="font-size: 0.8rem; color: var(--text-dim); font-style: italic;">No specific achievements listed.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Hiring Verdict -->
+        <div class="footer-grid">
+            <div class="verdict-card">
+                <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Hiring Status</label>
+                {% if "Immediately" in analysis.hireability_tag %}
+                <div class="status-badge status-hire">Hire Immediately</div>
+                {% elif "Consider" in analysis.hireability_tag %}
+                <div class="status-badge status-consider">Consider</div>
+                {% else %}
+                <div class="status-badge status-reject">Reject</div>
+                {% endif %}
+                <span class="domain-tag">Domain Expertise: {{ analysis.domain_expertise }}</span>
+            </div>
+
+            <div class="verdict-card">
+                <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 15px;">Evaluation Reasoning</label>
+                <div class="reasoning-box">
+                    <strong>Verdict Rationale:</strong><br>
+                    {% if analysis.explanation %}
+                        {{ analysis.explanation }}
+                    {% else %}
+                        {{ analysis.final_ai_result }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Data Reference -->
+        <div class="analysis-card" style="margin-top: 25px;">
+            <h3 style="margin: 0 0 20px 0;"><i class="fa-solid fa-file-lines"></i> Input Data Reference</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 10px;">Candidate Resume</label>
+                    <div style="background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 15px; font-size: 0.8rem; line-height: 1.5; color: #c9d1d9; max-height: 300px; overflow-y: auto; white-space: pre-wrap;">{{ resume_text }}</div>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.65rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 10px;">Job Description</label>
+                    <div style="background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 15px; font-size: 0.8rem; line-height: 1.5; color: #c9d1d9; max-height: 300px; overflow-y: auto; white-space: pre-wrap;">{% if job_description %}{{ job_description }}{% else %}<span style="color: var(--text-dim); font-style: italic;">No Job Description provided.</span>{% endif %}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="watermark" style="text-align: center; margin-top: 20px; font-size: 3rem; font-weight: 900; color: rgba(255, 255, 255, 0.03); letter-spacing: -1px; user-select: none;">C&R</div>
+    </div>
+</body>
+</html>
