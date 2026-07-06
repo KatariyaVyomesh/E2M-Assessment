@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "maxDuration": 60,
   "builds": [
     {
       "src": "resume_classifier/wsgi.py",
